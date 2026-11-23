@@ -1,0 +1,10 @@
+# Merge into the PRIVATE instance config.yaml; do not replace existing settings.
+# Instance 01. For 03 change /hermes-1 to /hermes-3 and trust to 10.203.3.10.
+webapp:
+  enabled: true
+  host: 0.0.0.0
+  port: 9120
+  public_url: https://hermes.example.com:9143/hermes-1
+dashboard:
+  trusted_proxies:
+    - 10.203.1.10

@@ -1,0 +1,22 @@
+[Unit]
+Description=Hermes gateway instance 01
+Wants=network-online.target
+After=network-online.target
+
+[Container]
+ContainerName=hermes-01
+Image=hermes.image
+Exec=gateway run
+Network=hermes-01.network
+NoNewPrivileges=true
+Tmpfs=/tmp
+Volume=%h/.local/share/hermes-gateway/hermes-01:/opt/data
+# These are container environment variables, not merely the host service environment.
+EnvironmentFile=%h/.config/hermes-gateway/hermes-01.env
+
+[Service]
+Restart=always
+TimeoutStartSec=300
+
+[Install]
+WantedBy=default.target
