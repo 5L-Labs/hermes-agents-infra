@@ -41,7 +41,9 @@ Never commit real passwords even to example files. The `.gitignore` is a guardra
 
 ## Adapt the examples locally
 
-Requires Linux with rootless Podman, Quadlet and systemd user services. The examples were generation-checked with Podman 5.7. nginx must support `http2 on` (1.25.1+) and `sub_filter`; the test uses `nginx:alpine`. Review/pin image digests for your own release policy; the examples retain upstream `latest`/`alpine` references rather than introducing an image-update mechanism.
+> **Keep this checkout out of every Quadlet search path.** Do not clone or keep it anywhere reachable from `~/.config/containers/systemd` (including through symlinked folders). Quadlet scans recursively, so on the next `daemon-reload` these example units can replace or shadow live units of the same name. A Hermes outage was caused exactly this way: the example `hermes-03.container` replaced the live unit and failed on its missing envfile.
+
+Requires Linux with rootless Podman, Quadlet and systemd user services. The examples were generation-checked with Podman 5.7 and validated against Hermes image `10dc4e18cee7` (`docker.io/nousresearch/hermes-agent:latest` at the time). nginx must support `http2 on` (1.25.1+) and `sub_filter`; the test uses `nginx:alpine`. Review/pin image digests for your own release policy; the examples retain upstream `latest`/`alpine` references rather than introducing an image-update mechanism.
 
 1. Copy the Quadlets and `nginx.conf` into the systemd directory above, not into an already-running installation without reviewing the differences. Prepare the private profiles, credentials and TLS files first. An example username/password of `replace-locally` must never be deployed.
 2. Select unused subnets. Public examples use **10.203.1.0/24** and **10.203.3.0/24**; these are illustrative, not the original deployment. The network gateways `.1` supply Podman DNS, so update `nginx.conf` resolvers to match. nginx has per-network example addresses **10.203.1.10** and **10.203.3.10**; use those exact addresses in each private profile's `dashboard.trusted_proxies`.
@@ -54,7 +56,14 @@ Requires Linux with rootless Podman, Quadlet and systemd user services. The exam
 QUADLET_UNIT_DIRS="$PWD/quadlet" /usr/libexec/podman/quadlet -dryrun -user
 ```
 
-The Quadlet binary path varies by distribution. Once private inputs are ready and you have approved starting the deployment:
+The Quadlet binary path varies by distribution.
+
+Preflight before stopping or replacing a live unit:
+
+- Confirm every `EnvironmentFile=` and `Volume=` source path in the installed units exists.
+- Run `/usr/libexec/podman/quadlet -dryrun -user` and check each unit's `SourcePath` is the file you intend, with nothing loaded from this checkout.
+
+Once private inputs are ready and you have approved starting the deployment:
 
 ```sh
 systemctl --user daemon-reload
