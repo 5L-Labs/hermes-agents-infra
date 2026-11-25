@@ -1,0 +1,13 @@
+# Deployment-specific configuration and runtime state stay out of source control.
+.env
+*.env
+!*.env.example
+local/
+private/
+runtime/
+*.pem
+*.key
+*.p12
+*.sqlite*
+*.db*
+__pycache__/

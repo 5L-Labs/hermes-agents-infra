@@ -1,0 +1,4 @@
+[Network]
+NetworkName=hermes-01
+Subnet=10.203.1.0/24
+Gateway=10.203.1.1

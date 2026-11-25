@@ -1,0 +1,21 @@
+[Unit]
+Description=Hermes gateway instance 03
+Wants=network-online.target
+After=network-online.target
+
+[Container]
+ContainerName=hermes-03
+Image=hermes.image
+Exec=gateway run
+Network=hermes-03.network
+NoNewPrivileges=true
+Tmpfs=/tmp
+Volume=%h/.local/share/hermes-gateway/hermes-03:/opt/data
+EnvironmentFile=%h/.config/hermes-gateway/hermes-03.env
+
+[Service]
+Restart=always
+TimeoutStartSec=300
+
+[Install]
+WantedBy=default.target

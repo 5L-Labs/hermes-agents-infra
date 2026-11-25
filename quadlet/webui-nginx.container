@@ -1,0 +1,32 @@
+[Unit]
+Description=HTTPS wrapper for isolated Hermes gateways
+Wants=network-online.target
+After=network-online.target
+
+[Container]
+ContainerName=nginx-hermes
+Image=nginx.image
+# Add a network attachment for each provisioned instance, not a shared backend network.
+Network=hermes-01.network:ip=10.203.1.10
+Network=hermes-03.network:ip=10.203.3.10
+Sysctl=net.ipv4.ip_forward=0
+Sysctl=net.ipv6.conf.all.forwarding=0
+NoNewPrivileges=true
+PidsLimit=100
+PublishPort=9143:9143/tcp
+ReadOnly=true
+Tmpfs=/var/run
+Tmpfs=/var/cache
+Tmpfs=/var/log/nginx
+Volume=%h/.config/containers/systemd/hermes-gateway/nginx.conf:/etc/nginx/conf.d/webui-nginx.conf:ro
+Volume=%h/.local/share/hermes-gateway/tls/dhparams4096.pem:/dhparams4096.pem:ro
+Volume=%h/.local/share/hermes-gateway/tls/cert.pem:/cert.pem:ro
+Volume=%h/.local/share/hermes-gateway/tls/key.pem:/key.pem:ro
+ServiceName=nginx-hermes
+
+[Service]
+Restart=always
+TimeoutStartSec=300
+
+[Install]
+WantedBy=default.target
