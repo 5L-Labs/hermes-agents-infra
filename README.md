@@ -106,3 +106,5 @@ podman exec nginx-hermes nginx -t && podman exec nginx-hermes nginx -s reload
 For gateway config changes, check activity before restarting. The installed Hermes build used during migration supported **SIGUSR1 restart-when-idle** and an s6-supervised gateway relaunch; verify that contract in your version. A container restart/SIGTERM is not equivalent and can interrupt active conversations, background work or queued deliveries. Do not automate forced restarts as part of nginx updates.
 
 Retiring dashboards, deleting the legacy filter, switching the default UI map to9120 and removing preexisting backend host publications are explicit follow-up changes. They have not been performed by this package. This repository's minimal examples omit the original deployment's unrelated mounts, DNS overrides, messaging integrations and preexisting published ports; it is not a drop-in backup of the entire host.
+
+Follow-up: add hermes-02 so the examples cover 01–03, and consider replacing the per-instance Quadlets/port-map entries with one template plus a small per-instance config for what differs (instance number, subnet, nginx IP, Webapp vs legacy port).
